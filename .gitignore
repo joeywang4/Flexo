@@ -1,0 +1,8 @@
+build/
+.vscode
+*.elf
+*.ll
+abc.history
+__pycache__
+exp_results/
+single_results/
