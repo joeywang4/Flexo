@@ -14,4 +14,4 @@ docker run -i -t --rm \
   bash -c "cd /flexo/reproduce && ./compile-all.sh"
 ```
 
-It takes roughly 40 mintes to compile every circuits.
+It takes around 10 mintes to compile every circuits.
