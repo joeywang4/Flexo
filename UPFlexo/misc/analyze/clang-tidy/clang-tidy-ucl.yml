@@ -1,0 +1,20 @@
+# for clang-tidy-16 from https://clang.llvm.org/extra/clang-tidy/
+---
+Checks: >
+  -*,
+  bugprone-*,
+    -bugprone-assignment-in-if-condition,
+    -bugprone-easily-swappable-parameters,
+    -bugprone-implicit-widening-of-multiplication-result,
+    -bugprone-macro-parentheses,
+    -bugprone-reserved-identifier,
+    -bugprone-sizeof-expression,
+    -bugprone-suspicious-include,
+  clang-analyzer-*,
+    -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
+  clang-diagnostics-*',
+  performance-*,
+FormatStyle: file
+HeaderFilterRegex: '.*'
+InheritParentConfig: false
+...

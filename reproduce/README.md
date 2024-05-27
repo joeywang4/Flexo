@@ -15,3 +15,4 @@ docker run -i -t --rm \
 ```
 
 It takes around 10 mintes to compile every circuits.
+The circuits are roughly 2.7 GB in size.

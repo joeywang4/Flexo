@@ -1,3 +1,23 @@
 [submodule "yosys"]
 	path = yosys
 	url = https://github.com/YosysHQ/yosys
+[submodule "vendor/doctest"]
+	path = UPFlexo/vendor/doctest
+	url = https://github.com/upx/upx-vendor-doctest.git
+	branch = upx-vendor
+[submodule "vendor/lzma-sdk"]
+	path = UPFlexo/vendor/lzma-sdk
+	url = https://github.com/upx/upx-vendor-lzma-sdk.git
+	branch = upx-vendor
+[submodule "vendor/ucl"]
+	path = UPFlexo/vendor/ucl
+	url = https://github.com/upx/upx-vendor-ucl.git
+	branch = upx-vendor
+[submodule "vendor/valgrind"]
+	path = UPFlexo/vendor/valgrind
+	url = https://github.com/upx/upx-vendor-valgrind.git
+	branch = upx-vendor
+[submodule "vendor/zlib"]
+	path = UPFlexo/vendor/zlib
+	url = https://github.com/upx/upx-vendor-zlib.git
+	branch = upx-vendor
