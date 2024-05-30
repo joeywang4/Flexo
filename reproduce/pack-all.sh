@@ -14,7 +14,7 @@ fi
 pack_binary() {
     local circuit="$1"
     local dir="$2"
-    local output_dir="./build/packed-$circuit"
+    local output_dir="./build/$binary-$circuit"
 
     # create a dir for the circuit if not exist
     if ! test -d $output_dir; then
