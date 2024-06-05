@@ -1,5 +1,6 @@
-"""Run experiments on the paper"""
+"""Run weird machines to reporduce the results on the paper (section 5)"""
 
+import argparse
 import os
 import subprocess
 import time
@@ -7,43 +8,13 @@ import util
 from typing import List
 
 file_path = os.path.dirname(os.path.abspath(__file__))
-base_path = os.path.join(file_path, "../")
-exp_path = os.path.join(file_path, "exp_results")
-config_file = os.path.join(file_path, "config.csv")
+exp_path = os.path.join(file_path, "results")
 MIN_DIV_ROUNDS = 1
 MAX_DIV_ROUNDS = 50
 MEASURE_ITER = 1000
 
 
-def get_best_row(filename: str) -> tuple[int, float, float]:
-    """Get the best row from a CSV file"""
-    best_row = (0, 0.0, 0.0)
-    with open(filename, "r", encoding="utf-8") as infile:
-        for line in infile:
-            if line.find("Div rounds") != -1:
-                continue
-            div_rounds, acc, sec = line.split(",")
-            div_rounds = int(div_rounds)
-            acc = float(acc[:-1])
-            sec = float(sec)
-            if acc > best_row[1] or (acc == best_row[1] and sec < best_row[2]):
-                best_row = (div_rounds, acc, sec)
-    return best_row
-
-
-def generate_all_results():
-    """Get the best row from each CSV file and write to all.csv"""
-    with open(f"{exp_path}/all.csv", "w", encoding="utf-8") as ofile:
-        ofile.write("Circuit,Div rounds,Accuracy,Time (us)\n")
-        circuits = os.listdir(exp_path)
-        for ckt in circuits:
-            if ckt == "all.csv" or not ckt.endswith(".csv"):
-                continue
-            row = get_best_row(f"{exp_path}/{ckt}")
-            ofile.write(f"{ckt[:-4]},{row[0]},{row[1]}%,{row[2]}\n")
-
-
-def get_best_window(circuit: str, config: util.Config) -> List[int]:
+def get_best_window(circuit: str, config: util.Config, fast: False) -> List[int]:
     """Get the best transient window size for a circuit"""
     circuit_path = os.path.join(file_path, "build", circuit, circuit)
     best_size, EC_best_size = 0, 0
@@ -52,20 +23,22 @@ def get_best_window(circuit: str, config: util.Config) -> List[int]:
     # get the best window size without EC, skip if timeout for this circuit is 0
     if config.timeout != 0:
         for i in range(MIN_DIV_ROUNDS, MAX_DIV_ROUNDS + 1):
-            util.rprint(f"Testing best window for {circuit}: {i}/{MAX_DIV_ROUNDS}")
+            util.rprint(
+                f"Testing the best window size for {circuit}: {i}/{MAX_DIV_ROUNDS}"
+            )
             for _ in range(5):
                 acc, runtime = util.run_circuit(
-                    circuit_path + f"-{i}.elf", config.test_iter, False, -1
+                    circuit_path + f"-{i}.elf", 200 if fast else MEASURE_ITER, False, -1
                 )
                 if acc > best_acc or (acc == best_acc and runtime < best_runtime):
                     best_acc, best_runtime, best_size = acc, runtime, i
 
-    print(
-        (
-            f"Best window size for {circuit}: {best_size} "
-            + f"({best_acc:.2f}%, {best_runtime:.2f} us)"
-        ).ljust(80)
-    )
+        print(
+            (
+                f"Best window size for {circuit}: {best_size} "
+                + f"({best_acc:.2f}%, {best_runtime:.2f} us)"
+            ).ljust(80)
+        )
 
     # get the best window size with EC, skip if timeout is 0
     if config.EC_timeout == 0:
@@ -133,7 +106,7 @@ def measure_acc_runtime(circuit: str, config: util.Config, window_size: int, ec:
     end = (time.time() + timeout * 60) if timeout != -1 else None
 
     # run the circuit and append results to `result_path`
-    for t in range(config.measure_trials):
+    for t in range(config.EC_measure_trials if ec else config.measure_trials):
         util.rprint(
             f"Running {circuit}"
             + (" (EC)" if ec else "")
@@ -162,7 +135,7 @@ def output_median(circuit: str, window_size: int, ec: bool) -> str:
     if not os.path.exists(result_path):
         return ""
 
-    acc, runtime = util.median_result(result_path)
+    acc, runtime = util.median_result(result_path, 2)
     output = circuit + (" (EC)" if ec else "") + ","
     output = output.ljust(20)
     output += f"{acc:.2f}%,".rjust(10)
@@ -171,13 +144,35 @@ def output_median(circuit: str, window_size: int, ec: bool) -> str:
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Run packed: measure the runtime of a program packed by UPFlexo."
+    )
+    parser.add_argument(
+        "-f", "--fast", action="store_true", help="Run with fast timeouts"
+    )
+    parser.add_argument(
+        "--simon25",
+        action="store_true",
+        help="Run Simon with 25 rounds instead of 32 rounds",
+    )
+    args = parser.parse_args()
+
     # ensure config file exists
+    config_file = os.path.join(
+        file_path, "config-fast.csv" if args.fast else "config.csv"
+    )
     if not os.path.exists(config_file):
         print(f"[!] Config file not found")
         exit(1)
 
     # parse config file
     raw_config = util.csv_to_dict(config_file)
+
+    # use simon25 instead of simon32 is specified by the user
+    if args.simon25 and "simon32" in raw_config:
+        raw_config["simon25"] = raw_config.pop("simon32")
+
+    # load config
     ckt_config = {}
     for ckt in raw_config.keys():
         ckt_config[ckt] = util.Config(raw_config[ckt])
@@ -197,7 +192,7 @@ if __name__ == "__main__":
     header = "circuit,best window size,best window size with error correction"
     for ckt, config in ckt_config.items():
         if ckt not in best_window:
-            best_window[ckt] = get_best_window(ckt, config)
+            best_window[ckt] = get_best_window(ckt, config, args.fast)
             util.dict_to_csv(best_window, window_file, header)
 
     # measure the accuracy and runtime

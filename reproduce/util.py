@@ -1,3 +1,5 @@
+"""Utility functions and classes"""
+
 import statistics
 import subprocess
 import sys
@@ -8,11 +10,12 @@ class Config:
     """Circuit config data"""
 
     def __init__(self, raw_config: List[int]) -> None:
-        assert len(raw_config) >= 4, "Invalid config data"
+        assert len(raw_config) >= 5, "Invalid config data"
         self.test_iter = raw_config[0]
         self.measure_trials = raw_config[1]
         self.timeout = raw_config[2]
-        self.EC_timeout = raw_config[3]
+        self.EC_measure_trials = raw_config[3]
+        self.EC_timeout = raw_config[4]
 
 
 def csv_to_dict(filename: str) -> Dict[str, List[int | float]]:
@@ -106,19 +109,24 @@ def run_circuit(
     return parse_output(proc.stdout.decode())
 
 
-def median_result(filename: str) -> Tuple[float, float]:
-    """Read a experiment result file and output the median accuracy and runtime"""
+def median_result(filename: str, columns: int) -> List[float]:
+    """
+    Read a csv file of floating numbers and output the median value for each column.
+    The first column is ignored.
+    """
     with open(filename, "r") as infile:
         lines = infile.readlines()[1:]
-    
-    accs, runtimes = [], []
+
+    # convert csv data to floats
+    data = [[] for _ in range(columns)]
     for line in lines:
         tokens = line.split(",")
-        if len(tokens) < 3: continue
-        accs.append(float(tokens[1]))
-        runtimes.append(float(tokens[2]))
-    print(filename)
-    return (statistics.median(accs), statistics.median(runtimes))
+        if len(tokens) < columns + 1:
+            continue
+        for i in range(columns):
+            data[i].append(float(tokens[i + 1]))
+
+    return [(statistics.median(col) if len(col) > 0 else 0.0) for col in data]
 
 
 def rprint(text: str):

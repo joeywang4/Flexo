@@ -1,8 +1,7 @@
-WM,Test window iterations,Measure trials,Measure timeout (minutes),Measure timeout with error correction (minutes)
-ALU,1000,1000,5,5
-sha1_round,1000,1000,10,10
-aes_round,100,300,15,60
-simon25,50,20,5,60
-simon32,50,20,5,60
-sha1_2blocks,50,50,0,100
-aes_block,40,20,0,120
+WM,Test window iterations,Measure trials,Measure timeout (minutes),Measure trials with EC,Measure timeout with EC (minutes)
+ALU,1000,1000,5,1000,5
+sha1_round,1000,1000,10,1000,10
+aes_round,100,300,15,100,60
+simon32,50,300,30,20,120
+sha1_2blocks,50,0,0,50,60
+aes_block,40,0,0,20,120
