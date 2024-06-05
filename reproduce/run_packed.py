@@ -5,6 +5,7 @@ import os
 import subprocess
 import time
 import util
+from typing import List, Dict, Tuple
 
 file_path = os.path.dirname(os.path.abspath(__file__))
 exp_path = os.path.join(file_path, "results")
@@ -32,7 +33,9 @@ def measure_runtime(circuit: str, window_size: int, timeout: int):
         try:
             left = None if end is None else (end - time.time())
             begin = time.time()
-            subprocess.run(circuit_path, stdout=subprocess.DEVNULL, check=True, timeout=left)
+            subprocess.run(
+                circuit_path, stdout=subprocess.DEVNULL, check=True, timeout=left
+            )
             with open(result_path, "a") as ofile:
                 ofile.write(f"{int(time.time())},{time.time() - begin:.2f}\n")
         except subprocess.TimeoutExpired:
@@ -56,6 +59,18 @@ def output_median(circuit: str, window_size: int) -> str:
     return output + "\n"
 
 
+def report(circuits: List[Tuple[str, int, str]], best_window: Dict[str, List[int]]):
+    output = "Circuit,".ljust(15) + "Runtime".rjust(15) + "\n"
+    for packer, _, ckt in circuits:
+        if ckt not in best_window:
+            print(f"[!] Missing experiment results for {ckt}")
+            continue
+
+        output += output_median(binary + "-" + packer, best_window[ckt][1])
+
+    print(output)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Run packed: measure the runtime of a program packed by UPFlexo."
@@ -67,6 +82,12 @@ if __name__ == "__main__":
         "--simon25",
         action="store_true",
         help="Run Simon with 25 rounds instead of 32 rounds",
+    )
+    parser.add_argument(
+        "-r",
+        "--report",
+        action="store_true",
+        help="Report the existing results without running the circuits again",
     )
     args = parser.parse_args()
 
@@ -98,6 +119,11 @@ if __name__ == "__main__":
         print("[!] Please run `run_WM.py` before running this script.")
         exit(1)
 
+    # report existing results without running experiments
+    if args.report:
+        report(circuits, best_window)
+        exit()
+
     # measure runtime
     for packer, timeout, ckt in circuits:
         if ckt not in best_window:
@@ -107,8 +133,4 @@ if __name__ == "__main__":
         measure_runtime(binary + "-" + packer, best_window[ckt][1], timeout)
 
     # report median accuracy and runtime
-    output = "Circuit,".ljust(15) + "Runtime".rjust(15) + "\n"
-    for packer, _, ckt in circuits:
-        output += output_median(binary + "-" + packer, best_window[ckt][1])
-
-    print(output)
+    report(circuits, best_window)

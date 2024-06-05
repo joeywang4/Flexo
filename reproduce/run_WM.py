@@ -5,7 +5,7 @@ import os
 import subprocess
 import time
 import util
-from typing import List
+from typing import List, Dict
 
 file_path = os.path.dirname(os.path.abspath(__file__))
 exp_path = os.path.join(file_path, "results")
@@ -143,9 +143,23 @@ def output_median(circuit: str, window_size: int, ec: bool) -> str:
     return output + "\n"
 
 
+def report(ckt_config: Dict[str, util.Config], best_window: Dict[str, List[int]]):
+    """Output the median accuracy and runtime for each circuit"""
+    output = "Circuit,".ljust(20) + "Accuracy,".rjust(10) + "Runtime".rjust(15) + "\n"
+    for ckt in ckt_config:
+        if ckt not in best_window:
+            print(f"[!] Missing experiment results for {ckt}")
+            continue
+
+        output += output_median(ckt, best_window[ckt][0], False)
+        output += output_median(ckt, best_window[ckt][1], True)
+
+    print(output)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Run packed: measure the runtime of a program packed by UPFlexo."
+        description="Run WM: measure the accuracy and runtime of weird machines."
     )
     parser.add_argument(
         "-f", "--fast", action="store_true", help="Run with fast timeouts"
@@ -154,6 +168,12 @@ if __name__ == "__main__":
         "--simon25",
         action="store_true",
         help="Run Simon with 25 rounds instead of 32 rounds",
+    )
+    parser.add_argument(
+        "-r",
+        "--report",
+        action="store_true",
+        help="Report the existing results without running the circuits again",
     )
     args = parser.parse_args()
 
@@ -174,7 +194,7 @@ if __name__ == "__main__":
 
     # load config
     ckt_config = {}
-    for ckt in raw_config.keys():
+    for ckt in raw_config:
         ckt_config[ckt] = util.Config(raw_config[ckt])
 
     # create the result directory if not exists
@@ -187,6 +207,11 @@ if __name__ == "__main__":
         best_window = util.csv_to_dict(window_file)
     else:
         best_window = {}
+
+    # report existing results without running experiments
+    if args.report:
+        report(ckt_config, best_window)
+        exit()
 
     # find the best window for circuits and save the results to a csv file
     header = "circuit,best window size,best window size with error correction"
@@ -205,9 +230,4 @@ if __name__ == "__main__":
             measure_acc_runtime(ckt, config, best_window[ckt][1], True)
 
     # report median accuracy and runtime
-    output = "Circuit,".ljust(20) + "Accuracy,".rjust(10) + "Runtime".rjust(15) + "\n"
-    for ckt, config in ckt_config.items():
-        output += output_median(ckt, best_window[ckt][0], False)
-        output += output_median(ckt, best_window[ckt][1], True)
-
-    print(output)
+    report(ckt_config, best_window)

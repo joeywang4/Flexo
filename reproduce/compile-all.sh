@@ -65,6 +65,8 @@ compile_circuit() {
         
         # LLVM IR to executable
         clang-17 $newfile -o ./build/$circuit_name/$circuit_name-$div_round.elf -lm -lstdc++
+        # delete LLVM IR to save space
+        rm $newfile
         echo -ne "Progress ($circuit_name): ${div_round}/${max_div_rounds}\r"
     done
     echo -ne '\n'
