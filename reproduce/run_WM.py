@@ -106,11 +106,12 @@ def measure_acc_runtime(circuit: str, config: util.Config, window_size: int, ec:
     end = (time.time() + timeout * 60) if timeout != -1 else None
 
     # run the circuit and append results to `result_path`
-    for t in range(config.EC_measure_trials if ec else config.measure_trials):
+    trials = config.EC_measure_trials if ec else config.measure_trials
+    for t in range(trials):
         util.rprint(
             f"Running {circuit}"
             + (" (EC)" if ec else "")
-            + f": {t + 1}/{config.measure_trials}"
+            + f": {t + 1}/{trials}"
         )
         try:
             left = None if end is None else (end - time.time())

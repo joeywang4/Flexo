@@ -25,7 +25,7 @@ The circuits are roughly 1.6 GB in size.
 ### 2. Compile the packers
 
 Run the following command to compile the packers.
-Note: you need [podman](https://podman.io/) to run this bash script.
+Note: you need [podman](https://podman.io/), cmake, and Ninja to run this bash script.
 
 ```sh
 ./compile-packers.sh

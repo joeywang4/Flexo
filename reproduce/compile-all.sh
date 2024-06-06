@@ -29,7 +29,7 @@ compile_circuit() {
     fi
 
     # config the Flexo compiler and compile the circuit with $min_div_rounds
-    export RET_WM_DIV_ROUNDS=$min_div_rounds WR_OFFSET=$wr_offset WR_FAKE_OFFSET=256
+    export RET_WM_DIV_ROUNDS=$min_div_rounds WR_OFFSET=$wr_offset WR_FAKE_OFFSET=256 WR_HIT_THRESHOLD=180
     if [ -n "$verilog" ]; then
         export WM_CIRCUIT_FILE=$verilog
     else

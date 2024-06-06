@@ -22,7 +22,7 @@ compile_circuit() {
     fi
 
     # config the Flexo compiler and compile the circuit with $min_div_rounds
-    export RET_WM_DIV_ROUNDS=$min_div_rounds WR_OFFSET=448 WR_FAKE_OFFSET=256 WR_SYSCALL_RAND=true
+    export RET_WM_DIV_ROUNDS=$min_div_rounds WR_OFFSET=448 WR_FAKE_OFFSET=256 WR_HIT_THRESHOLD=180 WR_SYSCALL_RAND=true
 
     # run the Flexo compiler and create an executable
     outfile=./WM/build/$circuit_name/$circuit_name-$min_div_rounds
