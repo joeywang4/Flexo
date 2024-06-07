@@ -31,7 +31,7 @@ class WeirdMachine {
 public:
   WeirdMachine(Flexo* f):flexo(f), circ(nullptr) {
     useFence = get_str_env("WM_USE_FENCE", "") != "false";
-    WR_HIT_THRESHOLD = get_int_env("WR_HIT_THRESHOLD", 200);
+    WR_HIT_THRESHOLD = get_int_env("WR_HIT_THRESHOLD", 180);
   };
   virtual ~WeirdMachine() = default;
 

@@ -4,9 +4,9 @@ A modified UPX packer that uses a weird machine to unpack.
 
 ## Build UPFlexo packers
 
-### 0. Install Flexo packer
+### 0. Install the Flexo compiler
 
-Please refer to the [README](../README.md) file in the parent directory about how to install Flexo compiler.
+Please refer to the [README](../README.md) file in the parent directory about how to install the Flexo compiler.
 
 ### 1. Compile AES and Simon decryption circuits
 

@@ -12,5 +12,5 @@ else
 fi
 
 # Config and run the Flexo compiler
-export RET_WM_DIV_ROUNDS=5 WR_OFFSET=576 WR_FAKE_OFFSET=256
+export RET_WM_DIV_ROUNDS=5 WR_OFFSET=576
 opt-17 -load-pass-plugin ./build/lib/libFlexo.so -passes="create-WMs" "$1" -S -o "$output"

@@ -133,7 +133,7 @@ void Flexo::runOnModule(Module &M) {
 
   // define the weird machine
   int RET_WM_DIV_ROUNDS = get_int_env("RET_WM_DIV_ROUNDS", 4);
-  int RET_WM_DIV_SIZE = get_int_env("RET_WM_DIV_SIZE", 64);
+  int RET_WM_DIV_SIZE = get_int_env("RET_WM_DIV_SIZE", 16);
   int RET_WM_JMP_SIZE = get_int_env("RET_WM_JMP_SIZE", 512);
   int DUAL_WM_MAX_INPUT = get_int_env("DUAL_WM_MAX_INPUT", 4);
 

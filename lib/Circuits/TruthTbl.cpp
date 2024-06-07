@@ -18,7 +18,7 @@ using namespace std;
 
 // load out[reg[0] + reg[1] + ... + reg[n]]
 string load_out(string out, vector<string>& inRegs) {
-  const string offset = to_string(get_int_env("WR_FAKE_OFFSET", 512));
+  const string offset = to_string(get_int_env("WR_FAKE_OFFSET", 256));
   if (inRegs.size() == 1) {
     return "mov " + offset + "(" + out + "," + inRegs[0] + "), %r10b\n";
   }

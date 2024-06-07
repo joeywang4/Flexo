@@ -20,7 +20,7 @@ WeirdRegisters::WeirdRegisters(
   Flexo* flexo, IRBuilder<>& builder, int align
 ): flexo(flexo), builder(builder), count(-1), align(Align(align)) {
   regOffset = get_int_env("WR_OFFSET", 960);
-  fakeOffset = get_int_env("WR_FAKE_OFFSET", 512);
+  fakeOffset = get_int_env("WR_FAKE_OFFSET", 256);
 
   string mappingType = get_str_env("WR_MAPPING", "Shuffle");
   if (mappingType == "Baseline") {
