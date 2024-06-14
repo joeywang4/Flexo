@@ -12,6 +12,7 @@ exp_path = os.path.join(file_path, "results")
 MIN_DIV_ROUNDS = 1
 MAX_DIV_ROUNDS = 50
 MEASURE_ITER = 1000
+MIN_EC_ACC = 0.95
 
 
 def get_best_window(circuit: str, config: util.Config, fast: False) -> List[int]:
@@ -48,7 +49,7 @@ def get_best_window(circuit: str, config: util.Config, fast: False) -> List[int]
     # this can tolerate circuits with large runtime
     timeout = 0.5
     for trial in range(10):
-        best_acc, best_runtime = 0, 0
+        best_acc, best_runtime = 0, 10**10
         for i in range(MIN_DIV_ROUNDS, MAX_DIV_ROUNDS + 1):
             filename = circuit_path + f"-{i}.elf"
             util.rprint(
@@ -69,7 +70,7 @@ def get_best_window(circuit: str, config: util.Config, fast: False) -> List[int]
                 )
             except subprocess.TimeoutExpired:
                 continue
-            if acc > best_acc or (acc == best_acc and runtime < best_runtime):
+            if acc > MIN_EC_ACC and runtime < best_runtime:
                 best_acc, best_runtime, EC_best_size = acc, runtime, i
 
         if EC_best_size != 0:
@@ -109,9 +110,7 @@ def measure_acc_runtime(circuit: str, config: util.Config, window_size: int, ec:
     trials = config.EC_measure_trials if ec else config.measure_trials
     for t in range(trials):
         util.rprint(
-            f"Running {circuit}"
-            + (" (EC)" if ec else "")
-            + f": {t + 1}/{trials}"
+            f"Running {circuit}" + (" (EC)" if ec else "") + f": {t + 1}/{trials}"
         )
         try:
             left = None if end is None else (end - time.time())

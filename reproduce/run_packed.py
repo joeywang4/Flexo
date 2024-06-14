@@ -10,6 +10,7 @@ from typing import List, Dict, Tuple
 file_path = os.path.dirname(os.path.abspath(__file__))
 exp_path = os.path.join(file_path, "results")
 MEASURE_ITER = 100
+MAX_TIMEOUT = 3600
 
 
 def measure_runtime(circuit: str, window_size: int, timeout: int):
@@ -32,15 +33,20 @@ def measure_runtime(circuit: str, window_size: int, timeout: int):
         util.rprint(f"Running {circuit}: {t + 1}/{MEASURE_ITER}")
         try:
             left = None if end is None else (end - time.time())
+            single_timeout = left if left is None or left < MAX_TIMEOUT else MAX_TIMEOUT
             begin = time.time()
             subprocess.run(
-                circuit_path, stdout=subprocess.DEVNULL, check=True, timeout=left
+                circuit_path,
+                stdout=subprocess.DEVNULL,
+                check=True,
+                timeout=single_timeout,
             )
             with open(result_path, "a") as ofile:
                 ofile.write(f"{int(time.time())},{time.time() - begin:.2f}\n")
         except subprocess.TimeoutExpired:
             print(f"[!] Timeout expires while measuring {circuit}")
-            return
+            if left is not None and left < MAX_TIMEOUT:
+                return
         except subprocess.CalledProcessError:
             print(f"[!] {circuit} unpacking failed".ljust(80))
 
