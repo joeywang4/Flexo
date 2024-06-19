@@ -8,7 +8,7 @@ import util
 from typing import List, Dict
 
 file_path = os.path.dirname(os.path.abspath(__file__))
-exp_path = os.path.join(file_path, "results")
+exp_path = os.path.join(file_path, "../results")
 MIN_DIV_ROUNDS = 1
 MAX_DIV_ROUNDS = 50
 MEASURE_ITER = 1000
@@ -17,7 +17,7 @@ MIN_EC_ACC = 0.95
 
 def get_best_window(circuit: str, config: util.Config, fast: False) -> List[int]:
     """Get the best transient window size for a circuit"""
-    circuit_path = os.path.join(file_path, "build", circuit, circuit)
+    circuit_path = os.path.join(file_path, "../build", circuit, circuit)
     best_size, EC_best_size = 0, 0
     best_acc, best_runtime = 0, 0
 
@@ -91,7 +91,7 @@ def get_best_window(circuit: str, config: util.Config, fast: False) -> List[int]
 def measure_acc_runtime(circuit: str, config: util.Config, window_size: int, ec: bool):
     """Measure the accuracy and runtime of a circuit"""
     circuit_path = (
-        os.path.join(file_path, "build", circuit, circuit) + f"-{window_size}.elf"
+        os.path.join(file_path, "../build", circuit, circuit) + f"-{window_size}.elf"
     )
     result_path = os.path.join(
         exp_path, circuit + ("-EC" if ec else "") + f"-{window_size}.csv"

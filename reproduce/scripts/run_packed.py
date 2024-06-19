@@ -8,7 +8,7 @@ import util
 from typing import List, Dict, Tuple
 
 file_path = os.path.dirname(os.path.abspath(__file__))
-exp_path = os.path.join(file_path, "results")
+exp_path = os.path.join(file_path, "../results")
 MEASURE_ITER = 100
 MAX_TIMEOUT = 3600
 
@@ -16,7 +16,7 @@ MAX_TIMEOUT = 3600
 def measure_runtime(circuit: str, window_size: int, timeout: int):
     """Measure the runtime of a packed program"""
     circuit_path = (
-        os.path.join(file_path, "build", circuit, circuit) + f"-{window_size}.elf"
+        os.path.join(file_path, "../build", circuit, circuit) + f"-{window_size}.elf"
     )
     result_path = os.path.join(exp_path, circuit + f"-{window_size}.csv")
 

@@ -1,20 +1,21 @@
 #!/bin/bash
 
+PROJECT_ROOT=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../../
+
 # configurations
 min_div_rounds=1
 max_div_rounds=50
-input_dir="."
 binary="ls"
 
 # create a build dir if not exist
-if ! test -d ./build; then
-    mkdir build
+if ! test -d $PROJECT_ROOT/reproduce/build; then
+    mkdir $PROJECT_ROOT/reproduce/build
 fi
 
 pack_binary() {
     local circuit="$1"
     local dir="$2"
-    local output_dir="./build/$binary-$circuit"
+    local output_dir="$PROJECT_ROOT/reproduce/build/$binary-$circuit"
 
     # create a dir for the circuit if not exist
     if ! test -d $output_dir; then
@@ -40,13 +41,13 @@ pack_binary() {
         fi
 
         # run the packer
-        $packer $input_dir/$binary -o $output_dir/$binary-$circuit-$div_round.elf > /dev/null
+        $packer $PROJECT_ROOT/reproduce/$binary -o $output_dir/$binary-$circuit-$div_round.elf > /dev/null
 
         echo -ne "Progress ($circuit): ${div_round}/${max_div_rounds}\r"
     done
     echo -ne '\n'
 }
 
-pack_binary simon25_CTR ../UPFlexo/build
-pack_binary simon32_CTR ../UPFlexo/build
-pack_binary AES_CTR ../UPFlexo/build
+pack_binary simon25_CTR $PROJECT_ROOT/UPFlexo/build
+pack_binary simon32_CTR $PROJECT_ROOT/UPFlexo/build
+pack_binary AES_CTR $PROJECT_ROOT/UPFlexo/build
