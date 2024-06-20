@@ -18,7 +18,6 @@ tmp*
 *.d
 *.dll
 *.dylib
-*.exe
 *.gz
 *.lib
 *.map
