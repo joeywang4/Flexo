@@ -1,33 +1,32 @@
 # Reproducing the results in our paper
 
-After installing Flexo (see the [README](../README.md) file in the root directory for instructions), it is possible to reproduce our experiment results by following the instructions below.
+Follow the instructions below to reproduce our experiment results.
 
-## Circuits (section 5)
+## Building the Flexo packer, circuits, packers, and packed programs
 
-Follow these steps to reproduce the results in section 5 of our paper.
+First, ensure dependencies are installed, and all submodules are pulled:
 
-### 1. Compile the circuits
-
-We provide a script to compile every circuits: `compile-all.sh`.
-To execute this script using the installed Flexo docker image, run the following command:
-
-```sh
-docker run -i -t --rm \
-  --mount type=bind,source="$(pwd)/.."/,target=/flexo \
-  flexo \
-  bash -c "cd /flexo/reproduce && ./compile-all.sh"
+```bash
+sudo apt install podman python3
+git submodule update --init --recursive
 ```
 
-It takes around 10 mintes to compile every circuits.
-The circuits are roughly 352 MB in size.
+Then, run `build-all.sh` to compile everything.
 
-### 2. Run the circuits
+```bash
+./scripts/build-all.sh
+```
 
-We provide a Python script ([run_WM.py](./run_WM.py)) to run and collect the results of each circuit.
-To run this script, please make sure Python 3 is installed.
+This script takes roughly 1 hour to compile everything and consumes around 10 GB of disk space.
+
+## Run the circuits and the packed programs
+
+### Circuits (section 5)
+
+We provide a Python script ([run_WM.py](./scripts/run_WM.py)) to run and collect the results of each circuit.
 
 ```sh
-python3 run_WM.py
+python3 ./scripts/run_WM.py
 ```
 
 __Command line options__
@@ -38,7 +37,7 @@ __Command line options__
 
 __Customizing the experiment settings__
 
-This Python script reads in a config file ([config.csv](./config.csv), or [config-fast.csv](./config-fast.csv) when the "fast" flag is enabled) to determine the number of iterations or trials when running each circuit, as well as the timeout for the circuits. It is possible to adjust the values inside these config files to increase or decrease the experiment time for a certain circuit.
+This Python script reads in a config file ([config.csv](./scripts/config.csv), or [config-fast.csv](./scripts/config-fast.csv) when the "fast" flag is enabled) to determine the number of iterations or trials when running each circuit, as well as the timeout for the circuits. It is possible to adjust the values inside these config files to increase or decrease the experiment time for a certain circuit.
 
 The config file has the following fields:
 1. `WM`: the name of the circuit
@@ -48,30 +47,17 @@ The config file has the following fields:
 5. `Measure trials with EC`: after measuring the accuracy and runtime of a circuit without error correction, the script continues to measure the accuracy and runtime for the same circuit with error correction enabled. Similar to `Measure trials`, this field controls the number of times a circuit is executed during this measurement.
 6. `Measure timeout with EC (minutes)`: configures the timeout (in minutes) when measuring the accuracy and runtime of a circuit (with error correction). When a timeout expires, the script saves the current results and stops executing this circuit.
 
-## UPFlexo packer (section 6)
+### Packed programs (section 6)
 
-Follow these steps to reproduce the results in section 6 of our paper.
-
-### 1. Compile the packers
-
-Please refer to the [readme file](/UPFlexo/README.md) under `UPFlexo/` for instructions about how to compile the packers.
-
-### 2. Pack the example program (`ls`)
-
-Run the `pack-all.sh` script under this directory to pack the example program, which is the `ls` binary from Ubuntu 23.04.
-It takes around 20 seconds to pack the example program, and the packed programs are roughly 233 MB in size.
-
-### 3. Run the packed programs
-
-We provide a Python script ([run_packed.py](./run_packed.py)) to run and collect the results of each packer.
-To run this script, please make sure Python 3 is installed.
+We provide a Python script ([run_packed.py](./scripts/run_packed.py)) to run and collect the results of each packer.
 
 ```sh
-python3 run_packed.py
+python3 ./scripts/run_packed.py
 ```
 
 __Command line options__
 
-- `-f` or `--fast`: reduce the experiment time. Without this flag, it may take as long as 4 hours to finish the experiment. Enabling the "fast" flag reduces the experiment time to less than 1 hour. However, using this flag may generate less stable results, which can be very different from the results in our paper.
+- `--aes-timeout`: set the timeout (in minutes) when running the AES circuit. (Default to 120 minutes)
+- `--simon-timeout`: set the timeout (in minutes) when running the Simon circuit. (Default to 120 minutes)
 - `--simon25`: reduce the number of rounds in Simon decryption from 32 rounds to 25 rounds. We enable this flag on the Zen 3 machine.
 - `-r` or `--report`: report previous experiment results (stored in the `results/` folder) without running the experiments.

@@ -3,6 +3,7 @@
 import argparse
 import os
 import subprocess
+import statistics
 import time
 import util
 from typing import List, Dict
@@ -18,8 +19,14 @@ MIN_EC_ACC = 0.95
 def get_best_window(circuit: str, config: util.Config, fast: False) -> List[int]:
     """Get the best transient window size for a circuit"""
     circuit_path = os.path.join(file_path, "../build", circuit, circuit)
+    result_path = os.path.join(exp_path, circuit + f"-windows.csv")
     best_size, EC_best_size = 0, 0
     best_acc, best_runtime = 0, 0
+
+    # create the result csv file if not exist
+    if not os.path.exists(result_path):
+        with open(result_path, "w") as ofile:
+            ofile.write("Window size,Accuracy,Runtime,EC\n")
 
     # get the best window size without EC, skip if timeout for this circuit is 0
     if config.timeout != 0:
@@ -27,12 +34,25 @@ def get_best_window(circuit: str, config: util.Config, fast: False) -> List[int]
             util.rprint(
                 f"Testing the best window size for {circuit}: {i}/{MAX_DIV_ROUNDS}"
             )
+
+            # collect 5 data points and get the median
+            accs, runtimes = [], []
             for _ in range(5):
-                acc, runtime = util.run_circuit(
+                got = util.run_circuit(
                     circuit_path + f"-{i}.elf", 200 if fast else MEASURE_ITER, False, -1
                 )
-                if acc > best_acc or (acc == best_acc and runtime < best_runtime):
-                    best_acc, best_runtime, best_size = acc, runtime, i
+                [l.append(v) for l, v in zip([accs, runtimes], got)]
+
+            acc, runtime = map(statistics.median, [accs, runtimes])
+
+            # log results of this window if acc > 0
+            if acc > 0:
+                with open(result_path, "a") as ofile:
+                    ofile.write(f"{i},{acc:.2f}%,{runtime:.2f} us,0\n")
+
+            # choose this window size if acc is higher
+            if acc > best_acc or (acc == best_acc and runtime < best_runtime):
+                best_acc, best_runtime, best_size = acc, runtime, i
 
         print(
             (
@@ -70,6 +90,13 @@ def get_best_window(circuit: str, config: util.Config, fast: False) -> List[int]
                 )
             except subprocess.TimeoutExpired:
                 continue
+
+            # log results of this window if acc > 0
+            if acc > 0:
+                with open(result_path, "a") as ofile:
+                    ofile.write(f"{i},{acc:.2f}%,{runtime:.2f} us,1\n")
+
+            # choose this window if runtime is less
             if acc > MIN_EC_ACC and runtime < best_runtime:
                 best_acc, best_runtime, EC_best_size = acc, runtime, i
 

@@ -82,7 +82,18 @@ if __name__ == "__main__":
         description="Run packed: measure the runtime of a program packed by UPFlexo."
     )
     parser.add_argument(
-        "-f", "--fast", action="store_true", help="Run with fast timeouts"
+        "--aes-timeout",
+        action="store",
+        help="Set the timeout of AES in minutes (default: 120)",
+        default=120,
+        type=int,
+    )
+    parser.add_argument(
+        "--simon-timeout",
+        action="store",
+        help="Set the timeout of Simon in minutes (default: 120)",
+        default=120,
+        type=int,
     )
     parser.add_argument(
         "--simon25",
@@ -106,12 +117,12 @@ if __name__ == "__main__":
     circuits = [
         (
             "AES_CTR",
-            30 if args.fast else 120,
+            args.aes_timeout,
             "aes_block",
         ),
         (
             "simon25_CTR" if args.simon25 else "simon32_CTR",
-            30 if args.fast else 120,
+            args.simon_timeout,
             "simon25" if args.simon25 else "simon32",
         ),
     ]
