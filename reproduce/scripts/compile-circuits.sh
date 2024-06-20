@@ -40,7 +40,11 @@ compile_circuit() {
 
     # run the Flexo compiler and create an executable
     outfile=$PROJECT_ROOT/reproduce/build/$circuit_name/$circuit_name-$min_div_rounds.ll
-    opt-17 -load-pass-plugin $PROJECT_ROOT/build/lib/libFlexo.so -passes="create-WMs" $dir/$circuit_name.ll -S -o $outfile    
+    echo "[$circuit_name]" >> $PROJECT_ROOT/reproduce/build/circuits.log
+    opt-17 -load-pass-plugin $PROJECT_ROOT/build/lib/libFlexo.so -passes="create-WMs" \
+        $dir/$circuit_name.ll -S -o $outfile \
+        | tee -a $PROJECT_ROOT/reproduce/build/circuits.log
+    echo "" >> $PROJECT_ROOT/reproduce/build/circuits.log
     clang-17 $outfile -o $PROJECT_ROOT/reproduce/build/$circuit_name/$circuit_name-$min_div_rounds.elf -lm -lstdc++
 
     # generate circuits with different transient window sizes
