@@ -1,6 +1,12 @@
 # Flexo
 
-A compiler for microarchitectural weird machines
+A compiler for microarchitectural weird machines.
+
+For more details, please refer to our paper:
+
+> Ping-Lun Wang, Riccardo Paccagnella, Riad S. Wahby, Fraser Brown.
+> "Bending microarchitectural weird machines towards practicality."
+> USENIX Security, 2024.
 
 ## Supported machines
 
@@ -21,6 +27,9 @@ The following list is the AWS EC2 instances that we used to run the weird machin
 > When using a processor not included in this list, the weird machines may fail to generate correct results.
 > While a processor with similar microarchitecture may be able to run our weird machines, we cannot guarantee the accuracy and performance when using other processors.
 
+## Reproduce our results
+
+Follow the instructions in the [README](reproduce/README.md) file under `reproduce/` to run the experiments in our paper.
 
 ## Install with Docker
 

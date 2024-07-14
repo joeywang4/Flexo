@@ -2,7 +2,7 @@
 
 Follow the instructions below to reproduce our experiment results.
 
-## Building the Flexo packer, circuits, packers, and packed programs
+## Building the Flexo compiler, circuits, packers, and packed programs
 
 First, ensure dependencies are installed, and all submodules are pulled:
 
