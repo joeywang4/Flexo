@@ -10,8 +10,11 @@ warnings = 0
 
 def check_files(path: str, hashes: dict, ext=".elf"):
     """Ensure all 50 files exist for a circuit, and there is no hash collision"""
+    global warnings
+
     for i in range(50):
         filename = os.path.join(base_path, path + f"-{i+1}" + ext)
+        filename = os.path.normpath(filename)
         if not os.path.exists(filename):
             print(f"[!] Installation incomplete. File {filename} does not exist!")
             exit()
