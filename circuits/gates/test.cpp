@@ -6,7 +6,6 @@
 #include <vector>
 
 /* Config */
-// bool verbose = false;
 unsigned tot_trials = 100000;
 
 // compile with clang -O1 -fno-inline-functions -S -emit-llvm -o test.ll test.cpp
@@ -100,14 +99,12 @@ void test_acc(
 /* Arguments */
 static char doc[] = "Test the accuracy and run time of weird machines.";
 static char args_doc[] = "";
-static struct argp_option options[] = { 
-    { "verbose", 'v', 0, 0, "Produce verbose output"},
+static struct argp_option options[] = {
     { "trial", 't', "TRIAL", 0, "Number of trials (default: 100000)."},
     { 0 } 
 };
 static error_t parse_opt(int key, char *arg, struct argp_state *state) {
     switch (key) {
-        // case 'v': verbose = true; break;
         case 't': tot_trials = atoi(arg); break;
         case ARGP_KEY_ARG: return 0;
         default: return ARGP_ERR_UNKNOWN;
