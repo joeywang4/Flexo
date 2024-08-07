@@ -16,13 +16,16 @@ For more details, please refer to our paper:
 - [Install the Flexo compiler](#install-the-flexo-compiler)
 - [Compile a weird machine](#compile-a-weird-machine)
 - [Example: basic logic gates](#example-basic-logic-gates)
+- [Create a new weird machine with C/C++](#create-a-new-weird-machine-with-cc)
+- [UPFlexo: UPX packer with Flexo weird machines](#upflexo-upx-packer-with-flexo-weird-machines)
+- [Run Flexo on an unsupported processor](#run-flexo-on-an-unsupported-processor)
+- [Internals of the Flexo compiler](#internals-of-the-flexo-compiler)
 - [Contacts](#contacts)
 
 ## What are microarchitectural weird machines?
 
 Microarchitectural weird machines (µWMs) are code gadgets that perform computation purely through microarchitectural side effects.
-They work similarly to a binary circuit.
-They use weird registers to store values and use weird gates to compute with them.
+They work similarly to a binary circuit: they use weird registers to store values and use weird gates to compute with them.
 
 For example, here is a weird AND gate with two inputs and one output:
 
@@ -64,7 +67,7 @@ Follow the instructions in the [README](reproduce/README.md) file under `reprodu
 
 ## Install the Flexo compiler
 
-We suggest installing our Flexo compiler using a Docker or Podman container.
+We suggest installing the Flexo compiler using a Docker or Podman container.
 The script below creates a container using the provided [Docker file](./Dockerfile) and runs the [build script](./build.sh) to build the compiler.
 For installation using Podman, simply replace `docker` with `podman` in these commands.
 
@@ -76,13 +79,13 @@ docker run -i -t --rm \
   bash -c "cd /flexo && ./build.sh"
 ```
 
-The compiler will be stored inside the `build/` directory when the installation process is complete.
+The compiler will be stored inside the `build/` folder when the installation process is complete.
 
 ## Compile a weird machine
 
 ### 1. C/C++ to LLVM IR
 
-The Flexo compiler takes a LLVM IR file as input, so the first step of compiling a weird machine is to compile a C/C++ program, which implements the weird machine, into LLVM IR.
+The Flexo compiler takes a LLVM IR file as input, so the first step of compiling a weird machine is to compile a C/C++ program implementing the weird machine into LLVM IR.
 The following command uses `clang` (version 17) to compile a C/C++ program into LLVM IR.
 Replace `[INPUT_WM_SOURCE]` with the filename of the input C/C++ program and `[LLVM_IR_FILE]` with the filename of the output LLVM IR.
 
@@ -126,6 +129,22 @@ These examples can be found in the [`circuits/`](./circuits/) folder.
 
 The [readme file](./circuits/gates/README.md) under [`circuits/gates`](./circuits/gates/) provides instructions regarding how to build a simple weird machine that computes basic logic gates (`AND`, `OR`, `NOT`, `NAND`, and `MUX`).
 
+## Create a new weird machine with C/C++
+
+#TODO
+
+## UPFlexo: UPX packer with Flexo weird machines
+
+#TODO
+
+## Run Flexo on an unsupported processor
+
+#TODO
+
+## Internals of the Flexo compiler
+
+#TODO
+
 ## Contacts
 
-Ping-Lun Wang (pinglunw \[at\] andrew \[dot\] cmu \[dot\] edu)
+For any question, contact the first author: Ping-Lun Wang (pinglunw \[at\] andrew \[dot\] cmu \[dot\] edu).

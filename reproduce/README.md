@@ -1,8 +1,8 @@
-# Reproducing the results in our paper
+# Reproduce the results in our paper
 
 Follow the instructions below to reproduce our experiment results.
 
-## Building the Flexo compiler, circuits, packers, and packed programs
+## Build the Flexo compiler, circuits, packers, and packed programs
 
 First, ensure dependencies are installed, and all submodules are pulled:
 
@@ -19,9 +19,7 @@ Then, run `build-all.sh` to compile everything.
 
 This script takes roughly 1 hour to compile everything and consumes around 10 GB of disk space.
 
-## Run the circuits and the packed programs
-
-### Circuits (section 5)
+## Run the circuits (section 5)
 
 We provide a Python script ([run_WM.py](./scripts/run_WM.py)) to run and collect the results of each circuit.
 
@@ -47,7 +45,7 @@ The config file has the following fields:
 5. `Measure trials with EC`: after measuring the accuracy and runtime of a circuit without error correction, the script continues to measure the accuracy and runtime for the same circuit with error correction enabled. Similar to `Measure trials`, this field controls the number of times a circuit is executed during this measurement.
 6. `Measure timeout with EC (minutes)`: configures the timeout (in minutes) when measuring the accuracy and runtime of a circuit (with error correction). When a timeout expires, the script saves the current results and stops executing this circuit.
 
-### Packed programs (section 6)
+## Run the packed programs (section 6)
 
 We provide a Python script ([run_packed.py](./scripts/run_packed.py)) to run and collect the results of each packer.
 

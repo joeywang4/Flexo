@@ -26,7 +26,7 @@ The first step to build this weird machine is to compile the source code into LL
 A [make file](./circuits/gates/Makefile) is prepared to serve this purpose.
 Simply run the `make` command under [`circuits/gates/`](./circuits/gates/) to perform this step.
 Note that the make file will use the `clang-17` command to compile the source code.
-If `clang-17` is not installed, please use [the Docker/Podman container](#install-the-flexo-compiler) used to install Flexo to perform this step:
+If `clang-17` is not installed, please use [the Docker/Podman container](../../README.md#install-the-flexo-compiler) used to install Flexo to perform this step:
 
 ```sh
 docker run -i -t --rm \
@@ -40,7 +40,7 @@ This will generate a LLVM IR file, `test.ll`, under [`circuits/gates/`](./circui
 ### 2. Use the Flexo compiler to generate a weird machine
 
 Next, we invoke the Flexo compiler to generate the weird machine.
-We use [the Docker/Podman container](#install-the-flexo-compiler) to perform this step:
+We use [the Docker/Podman container](../../README.md#install-the-flexo-compiler) to perform this step:
 
 ```sh
 docker run -i -t --rm \
@@ -79,7 +79,7 @@ If the `clang-17` command is available:
 clang-17 ./circuits/gates/test-wm.ll -o ./circuits/gates/test.elf -lm -lstdc++
 ```
 
-Otherwise, use [the Docker/Podman container](#install-the-flexo-compiler) to perform this step:
+Otherwise, use [the Docker/Podman container](../../README.md#install-the-flexo-compiler) to perform this step:
 
 ```sh
 docker run -i -t --rm \
