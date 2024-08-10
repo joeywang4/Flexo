@@ -111,8 +111,8 @@ over 100000 iterations.
 ... // more gates below (omitted)
 ```
 
-If the accuracy is very low (less than 70%), then the compiler options provided to the Flexo compiler (step 2) may need to be adjusted, or the processor is not supported.
-For more information about adjusting the compiler options for the Flexo compiler, please refer to "[Run Flexo on an unsupported processor](#run-flexo-on-an-unsupported-processor)".
+If the accuracy is very low (less than 70%), then the [compiler configurations](../../README.md#configure-the-flexo-compiler) provided to the Flexo compiler may need to be adjusted, or in some very rare cases, the processor may not be able to run Flexo weird machines.
+For more information about adjusting the compiler configurations for the Flexo compiler, please refer to "[Run Flexo on an unsupported processor](#run-flexo-on-an-unsupported-processor)".
 
 ## Construction of this weird machine
 
